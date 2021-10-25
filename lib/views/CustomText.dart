@@ -23,7 +23,7 @@ class CustomText{
     return Text(text,style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: color),textAlign: TextAlign.center);
   }
   static Widget btnText(String text,Color color){
-    return Text(text,style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: color),textAlign: TextAlign.center,);
+    return Text(text,style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: color),textAlign: TextAlign.center,);
   }
   static Widget btnText14(String text,Color color){
     return Text(text,style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: color),textAlign: TextAlign.center,);

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fruits/utils/app_Localization.dart';
 import 'package:fruits/views/Register.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'CustomText.dart';
 import '../Services/UserServices.dart';
 import '../main.dart';
@@ -43,7 +45,6 @@ class _state extends State<Login>{
                   child: Container(
                     padding: EdgeInsets.only(top:10),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         ImageIcon(AssetImage("images/IconBack.png"),),
                       ],
@@ -54,7 +55,7 @@ class _state extends State<Login>{
                 height: MediaQuery.of(context).size.height*.25,
                   fit: BoxFit.cover,
                 ),
-                CustomText.titleText("تسجيل الدخول"),
+                CustomText.titleText(DemoLocalizations.of(context).title['login']),
               //  CustomText.text12Bold("من فضلك قم بادخال بياناتك",Colors.black54),
                 Form(
                   key: formKey,
@@ -106,7 +107,7 @@ class _state extends State<Login>{
                                 borderSide: BorderSide(color: Colors.red)
                             ),
                             suffixIcon: Icon(Icons.phone),
-                            hintText:'رقم الهاتف' ,
+                            hintText:DemoLocalizations.of(context).title['phonenumber'] ,
                             errorStyle: TextStyle(fontSize: 0),
                             hintStyle: TextStyle(color: Colors.black45,fontWeight: FontWeight.bold,fontSize: 12),
                           ),
@@ -159,7 +160,7 @@ class _state extends State<Login>{
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide(color: Colors.red)
                             ),
-                            hintText: "كلمة المرور",
+                            hintText: DemoLocalizations.of(context).title['password'],
                             errorStyle: TextStyle(fontSize: 0),
                             hintStyle: TextStyle(color: Colors.black45,fontWeight: FontWeight.bold,fontSize: 12),
                             suffixIcon:InkWell(
@@ -179,12 +180,13 @@ class _state extends State<Login>{
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*.02,),
-                message==null?SizedBox():CustomText.text12Bold(message, Color(h.mainColor)),
+                message==null?SizedBox():CustomText.text12Bold(message, Colors.red),
                 SizedBox(height: MediaQuery.of(context).size.height*.02,),
                 GestureDetector(
                   onTap: ()async{
+                    SharedPreferences pref=await SharedPreferences.getInstance();
                     if(formKey.currentState.validate()){
-                      responces=await userServices.login("ar"/*ParentPage.language*/, phone.text, password.text);
+                      responces=await userServices.login("ar"/*ParentPage.language*/, phone.text, password.text,pref.getString("device_token"));
                       if(responces["status"]==200)
                       {
                         GlobalFunction.SaveData("UserId", responces["user"]["id"]);
@@ -192,6 +194,9 @@ class _state extends State<Login>{
                         GlobalFunction.SaveData("Email", responces["user"]["email"]);
                         GlobalFunction.SaveData("Img", responces["user"]["photo"]);
                         GlobalFunction.SaveData("Token", responces["user"]["token"]);
+                        setState(() {
+                          ParentPage.user_id= responces["user"]["id"];
+                        });
                         Navigator.pushNamedAndRemoveUntil(context, "/mainPage", (route) => false);
                       }
                       else {
@@ -214,7 +219,7 @@ class _state extends State<Login>{
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                       color: Color(h.mainColor)
                     ),
-                    child: CustomText.btnText("تسجيل الدخول", Colors.white),
+                    child: CustomText.btnText(DemoLocalizations.of(context).title['login'], Colors.white),
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*.03,),
@@ -227,8 +232,8 @@ class _state extends State<Login>{
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CustomText.text12("لا تملتك حساب بالفعل "),
-                        Text("سجل حساب جديد",style: TextStyle(decoration: TextDecoration.underline,color: Color(h.mainColor),fontSize: 12,fontWeight: FontWeight.bold),)
+                        CustomText.text12(DemoLocalizations.of(context).title['nothaveaccount']+" "),
+                        Text(DemoLocalizations.of(context).title['createnewaccount']+" ",style: TextStyle(decoration: TextDecoration.underline,color: Color(h.mainColor),fontSize: 12,fontWeight: FontWeight.bold),)
 
                       ],
                     ),
@@ -260,7 +265,7 @@ class _state extends State<Login>{
                       children: [
                         ImageIcon(AssetImage("images/VisitorIcon.png"),color: Color(h.mainColor),),
                         SizedBox(width: 10,),
-                        CustomText.btnText("التصفح كزائر", Color(h.mainColor))
+                        CustomText.btnText(DemoLocalizations.of(context).title['Browsevisitor'], Color(h.mainColor))
                       ],
                     ),
                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fruits/utils/app_Localization.dart';
 
 import '../main.dart';
 
@@ -53,7 +54,7 @@ class _state extends State<CustomSearch>{
                borderRadius: BorderRadius.circular(30),
                borderSide: BorderSide(color: Colors.white)
            ),
-           hintText:'ما الذي تبحث عنه' ,
+           hintText: DemoLocalizations.of(context).title["search"] ,
            hintStyle: TextStyle(fontSize: 12,color: Colors.black38),
            prefixIcon:Container(
                width: 30,

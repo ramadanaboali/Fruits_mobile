@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:fruits/Services/GlobalVariable.dart';
+import 'package:fruits/utils/app_Localization.dart';
+import 'package:fruits/views/PaymentMethod.dart';
 import 'package:fruits/views/Register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'CustomText.dart';
@@ -42,6 +45,7 @@ class _state extends State<ProFile>{
       email=prefs.getString("Email");
       UserId=prefs.getString("UserId");
     });
+    print("0000000000000000000000000000000000000000000000000000000000000000");
   }
   @override
   void initState() {
@@ -51,7 +55,7 @@ class _state extends State<ProFile>{
   }
   @override
   Widget build(BuildContext context) {
-    return UserId==null?
+    return ParentPage.user_id==null?
           Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
@@ -62,7 +66,7 @@ class _state extends State<ProFile>{
           ),
           child: Column(
             children: [
-              GestureDetector(
+                /*   InkWell(
                 onTap: (){
                   Navigator.pop(context);
                 },
@@ -75,7 +79,8 @@ class _state extends State<ProFile>{
                     ],
                   ),
                 ),
-              ),
+              ),*/
+              SizedBox(height: MediaQuery.of(context).size.height*.1,),
               Image.asset("images/logo.png",
                 height: MediaQuery.of(context).size.height*.25,
                 fit: BoxFit.cover,
@@ -207,10 +212,11 @@ class _state extends State<ProFile>{
               SizedBox(height: MediaQuery.of(context).size.height*.02,),
               message==null?SizedBox():CustomText.text12Bold(message, Color(h.mainColor)),
               SizedBox(height: MediaQuery.of(context).size.height*.02,),
-              GestureDetector(
+              InkWell(
                 onTap: ()async{
+                  SharedPreferences pref=await SharedPreferences.getInstance();
                   if(formKey.currentState.validate()){
-                    responces=await userServices.login("ar"/*ParentPage.language*/, phone.text, password.text);
+                    responces=await userServices.login("ar"/*ParentPage.language*/, phone.text, password.text,pref.getString("device_token"));
                     if(responces["status"]==200)
                     {
                       GlobalFunction.SaveData("UserId", responces["user"]["id"]);
@@ -244,7 +250,7 @@ class _state extends State<ProFile>{
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height*.03,),
-              GestureDetector(
+              InkWell(
                 onTap: (){
                   Navigator.push(context, GlobalFunction.route(Register()));
                 },
@@ -315,7 +321,7 @@ class _state extends State<ProFile>{
               ),
               child: Column(
                 children: [
-                  GestureDetector(
+                  InkWell(
                     onTap: (){
                       Navigator.push(context, GlobalFunction.route(EditProFile()));
                     },
@@ -333,7 +339,7 @@ class _state extends State<ProFile>{
                               child: ImageIcon(AssetImage("images/ProfileIcon.png"),color: Colors.white,size: 18,),
                             ),
                             SizedBox(width: 12,),
-                            CustomText.btnText("معلومات حسابي", Colors.black54),
+                            CustomText.btnText(DemoLocalizations.of(context).title['profileinfo'], Colors.black54),
 
                           ],
                         ),
@@ -342,7 +348,7 @@ class _state extends State<ProFile>{
                     ),
                   ),
                   Divider(color: Colors.black12,thickness: 1,),
-                  GestureDetector(
+                  InkWell(
                     onTap: (){
                       Navigator.push(context, GlobalFunction.route(Orders()));
                     },
@@ -360,7 +366,7 @@ class _state extends State<ProFile>{
                               child: ImageIcon(AssetImage("images/aboutApp.png"),color: Colors.white,size: 18,),
                             ),
                             SizedBox(width: 12,),
-                            CustomText.btnText("طلباتي", Colors.black54)
+                            CustomText.btnText(DemoLocalizations.of(context).title['myOrders'], Colors.black54)
                           ],
                         ),
                         Icon(ParentPage.language=="ar"?Icons.arrow_back_ios_outlined:Icons.arrow_forward_ios_outlined,color: Colors.black54,size: 20,)
@@ -368,9 +374,9 @@ class _state extends State<ProFile>{
                     ),
                   ),
                   Divider(color: Colors.black12,thickness: 1,),
-                  GestureDetector(
+                  InkWell(
                     onTap: (){
-                      //Navigator.push(context, GlobalFunction.route(EditProFile()));
+                      Navigator.push(context, GlobalFunction.route(PaymentMethod()));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -386,7 +392,7 @@ class _state extends State<ProFile>{
                               child: ImageIcon(AssetImage("images/visaicon.png"),color: Colors.white,size: 27.5,),
                             ),
                             SizedBox(width: 12,),
-                            CustomText.btnText("وسائل الدفع", Colors.black54)
+                            CustomText.btnText(DemoLocalizations.of(context).title['paymentmethod'], Colors.black54)
                           ],
                         ),
                         Icon(ParentPage.language=="ar"?Icons.arrow_back_ios_outlined:Icons.arrow_forward_ios_outlined,color: Colors.black54,size: 20,)
@@ -421,7 +427,7 @@ class _state extends State<ProFile>{
               ),
               child: Column(
                 children: [
-                  GestureDetector(
+                  InkWell(
                     onTap: (){
                       Navigator.push(context, GlobalFunction.route(Setting()));
                     },
@@ -439,7 +445,7 @@ class _state extends State<ProFile>{
                               child: ImageIcon(AssetImage("images/setting.png"),color: Colors.white,size:18,),
                             ),
                             SizedBox(width: 12,),
-                            CustomText.btnText("الاعدادات", Colors.black54)
+                            CustomText.btnText(DemoLocalizations.of(context).title['setting'], Colors.black54)
                           ],
                         ),
                         Icon(ParentPage.language=="ar"?Icons.arrow_back_ios_outlined:Icons.arrow_forward_ios_outlined,color: Colors.black54,size: 20,)
@@ -447,7 +453,7 @@ class _state extends State<ProFile>{
                     ),
                   ),
                   Divider(color: Colors.black12,thickness: 1,),
-                  GestureDetector(
+                  InkWell(
                     onTap: (){
                       Navigator.push(context, GlobalFunction.route(HelpCenter()));
                     },
@@ -465,7 +471,7 @@ class _state extends State<ProFile>{
                               child: ImageIcon(AssetImage("images/aboutApp.png"),color: Colors.white,size: 18,),
                             ),
                             SizedBox(width: 12,),
-                            CustomText.btnText("مركز المساعدة", Colors.black54)
+                            CustomText.btnText(DemoLocalizations.of(context).title['helpcenter'], Colors.black54)
                           ],
                         ),
                         Icon(ParentPage.language=="ar"?Icons.arrow_back_ios_outlined:Icons.arrow_forward_ios_outlined,color: Colors.black54,size: 20,)
@@ -473,7 +479,7 @@ class _state extends State<ProFile>{
                     ),
                   ),
                   Divider(color: Colors.black12,thickness: 1,),
-                  GestureDetector(
+                  InkWell(
                     onTap: (){
                       Navigator.push(context, GlobalFunction.route(AboutApp()));
                     },
@@ -491,7 +497,7 @@ class _state extends State<ProFile>{
                               child: ImageIcon(AssetImage("images/phone.png"),color: Colors.white,size: 18,),
                             ),
                             SizedBox(width: 12,),
-                            CustomText.btnText("من نحن", Colors.black54)
+                            CustomText.btnText(DemoLocalizations.of(context).title['aboutus'], Colors.black54)
                           ],
                         ),
                         Icon(ParentPage.language=="ar"?Icons.arrow_back_ios_outlined:Icons.arrow_forward_ios_outlined,color: Colors.black54,size: 20,)
@@ -499,9 +505,10 @@ class _state extends State<ProFile>{
                     ),
                   ),
                   Divider(color: Colors.black12,thickness: 1,),
-                  GestureDetector(
+                  InkWell(
                     onTap: (){
                     //  Navigator.push(context, GlobalFunction.route(AboutApp()));
+                      share("https://play.google.com/store");
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -517,7 +524,7 @@ class _state extends State<ProFile>{
                               child: ImageIcon(AssetImage("images/share.png"),color: Colors.white,size: 18,),
                             ),
                             SizedBox(width: 12,),
-                            CustomText.btnText("شارك التطبيق", Colors.black54)
+                            CustomText.btnText(DemoLocalizations.of(context).title['shareapp'], Colors.black54)
                           ],
                         ),
                         Icon(ParentPage.language=="ar"?Icons.arrow_back_ios_outlined:Icons.arrow_forward_ios_outlined,color: Colors.black54,size: 20,)
@@ -552,10 +559,10 @@ class _state extends State<ProFile>{
               ),
               child: Column(
                 children: [
-                  GestureDetector(
+                  InkWell(
                     onTap: (){
                       Logout();
-                      Navigator.pushNamedAndRemoveUntil(context, "/Slider", (route) => false);
+                      //Navigator.pushNamedAndRemoveUntil(context, "/Slider", (route) => false);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -571,7 +578,7 @@ class _state extends State<ProFile>{
                               child: ImageIcon(AssetImage("images/logout.png"),color: Colors.white,size: 18,),
                             ),
                             SizedBox(width: 12,),
-                            CustomText.btnText("تسجيل الخروج", Colors.black54)
+                            CustomText.btnText(DemoLocalizations.of(context).title['logout'], Colors.black54)
                           ],
                         ),
                         Icon(ParentPage.language=="ar"?Icons.arrow_back_ios_outlined:Icons.arrow_forward_ios_outlined,color: Colors.black54,size: 20,)
@@ -591,5 +598,15 @@ class _state extends State<ProFile>{
   Logout()async{
     SharedPreferences prefs=await SharedPreferences.getInstance();
     prefs.remove("UserId");
+    prefs.remove("Token");
+    Navigator.pushNamedAndRemoveUntil(context, "/Slider", (route) => false);
+  }
+  Future<void> share(String url) async {
+    await FlutterShare.share(
+        title: 'Product Details',
+        text: '',
+        linkUrl: url,
+        chooserTitle: 'Product'
+    );
   }
 }

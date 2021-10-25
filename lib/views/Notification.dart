@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fruits/Model/NotificationModel.dart';
+import 'package:fruits/Services/UserServices.dart';
+import 'package:fruits/utils/app_Localization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
 import 'CustomSearch.dart';
@@ -13,6 +17,30 @@ class Notifications extends StatefulWidget{
 }
 class _state extends State<Notifications>{
   Home h=new Home();
+  List<NotificationDetail>data;
+  UserServices userServices=new UserServices();
+  var lang;
+  loadData()async{
+    SharedPreferences prefs=await SharedPreferences.getInstance();
+    if(prefs.getString("UserId")==null){
+      setState(() {
+        data=[];
+      });
+    }else{
+      data=await userServices.GetNotification(prefs.getString("UserId"));
+      setState(() {
+        lang=prefs.getString("lang");
+      });
+    }
+    print(data.length);
+    print("00000000000000000000000000000000000000000000000000000000000000000000000000000000");
+  }
+  @override
+  void initState(){
+    // TODO: implement initState
+    super.initState();
+    loadData();
+  }
   @override
   Widget build(BuildContext context) {
   return Scaffold(
@@ -36,7 +64,7 @@ class _state extends State<Notifications>{
                   children: [
                   ImageIcon(AssetImage("images/notification.png"),color: Color(h.mainColor),),
                     SizedBox(width: 5,),
-                    CustomText.titleTextColor("الاشعارات",Color(h.mainColor)),
+                    CustomText.titleTextColor(DemoLocalizations.of(context).title['notification'],Color(h.mainColor)),
                   ],
                 ),
                 GestureDetector(
@@ -48,7 +76,7 @@ class _state extends State<Notifications>{
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        ImageIcon(AssetImage("images/IconBack.png"),),
+                      ParentPage.language=="ar"?ImageIcon(AssetImage("images/IconBack.png"),):Icon(Icons.arrow_forward_rounded,size: 30,),
                       ],
                     ),
                   ),
@@ -58,9 +86,20 @@ class _state extends State<Notifications>{
           ),
           Divider(color: Colors.black12,thickness: 1,),
           SizedBox(height: MediaQuery.of(context).size.height*.01,),
-          Expanded(child: ListView.builder(
+          data==null?Expanded(child: Center(child: CircularProgressIndicator(),)):data.length==0?
+          Expanded(
+            child: Column(
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*.15,),
+                Image.asset("images/logo.png",
+                  height: MediaQuery.of(context).size.height*.15,
+                ),
+                CustomText.btnText("No Notification For You", Colors.black)
+              ],
+            ),
+          ):Expanded(child: ListView.builder(
               padding: EdgeInsets.zero,
-              itemCount: 21,itemBuilder: (context,index){
+              itemCount: data.length,itemBuilder: (context,index){
             return Container(
               margin: EdgeInsets.only(
                 left: MediaQuery.of(context).size.width*.05,
@@ -109,10 +148,22 @@ class _state extends State<Notifications>{
                  Column(
                    crossAxisAlignment: CrossAxisAlignment.start,
                    children: [
+                     SizedBox(height: 5),
                      Container(
                          width: MediaQuery.of(context).size.width*.62,
-                         child: CustomText.text12Bold("تم انشاء طلبك بنجاح.. سيتم التوصيل اليك في الموعد المحدد", Colors.black54)),
-                     CustomText.text12Bold("منذ دقيقة", Color(h.mainColor))
+                         child: CustomText.text12Bold(data[index].title, Colors.black54)),
+                    Container(
+                      width: MediaQuery.of(context).size.width*.62,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+
+                              child:Text(data[index].creationDate,style: TextStyle(fontSize: 12,color:Color(h.mainColor)),))
+
+                        ],
+                      ),
+                    )
                    ],
                  )
                 ],

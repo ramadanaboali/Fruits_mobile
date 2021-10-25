@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fruits/Model/CartLocalModel.dart';
 import 'package:fruits/Services/GlobalVariable.dart';
+import 'package:fruits/utils/app_Localization.dart';
+import 'package:fruits/views/HomePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../DbHelper.dart';
 import 'Address.dart';
@@ -62,7 +64,7 @@ class _state extends State<Cart>{
                       children: [
                         ImageIcon(AssetImage("images/shoppingCard.png"),color: Color(h.mainColor),),
                         SizedBox(width: 5,),
-                        CustomText.titleTextColor("السلة",Color(h.mainColor)),
+                        CustomText.titleTextColor(DemoLocalizations.of(context).title['shoppingcart'],Color(h.mainColor)),
                       ],
                     ),
                     GestureDetector(
@@ -74,7 +76,7 @@ class _state extends State<Cart>{
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            ImageIcon(AssetImage("images/IconBack.png"),),
+                            ParentPage.language=="ar"?ImageIcon(AssetImage("images/IconBack.png"),):Icon(Icons.arrow_forward_rounded,size: 30,),
                           ],
                         ),
                       ),
@@ -98,13 +100,14 @@ class _state extends State<Cart>{
                             padding:EdgeInsets.only(top:MediaQuery.of(context).size.height*0),child: Center(
                           child: Column(
                             children: [
+                              SizedBox(height: MediaQuery.of(context).size.height*.17,),
                               ClipRRect(
                                   borderRadius: BorderRadius.all(Radius.circular(1000)),
                                   child: Image.asset("images/logo.png",color: Color(h.mainColor),
                                     height: MediaQuery.of(context).size.height*.25,
                                   )),
                               SizedBox(height: MediaQuery.of(context).size.height*.02,),
-                              Text("لا يوجد منتجات في السلة",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black26),),
+                              Text(DemoLocalizations.of(context).title['noproductcart'],style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black26),),
                               SizedBox(height: MediaQuery.of(context).size.height*.035,),
 
                             ],
@@ -172,7 +175,8 @@ class _state extends State<Cart>{
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
                                       GestureDetector(
-                                        onTap: (){
+                                        onTap: () async {
+                                          SharedPreferences prefs=await SharedPreferences.getInstance();
                                           CartMedelLocal cartLDBModel = CartMedelLocal({
                                             'id':c.id,
                                             'name': c.name,
@@ -185,7 +189,9 @@ class _state extends State<Cart>{
 
                                           setState(() {
                                             db.updateCourse(cartLDBModel);
+                                            ParentPage.TotalPrice=ParentPage.TotalPrice+c.price;
                                           });
+                                          prefs.setString("price", ParentPage.TotalPrice.toString());
                                         },
                                         child: Container(
                                             padding:EdgeInsets.all(3),
@@ -193,7 +199,8 @@ class _state extends State<Cart>{
                                       ),
                                       CustomText.btnText(c.quantity.toString(),Colors.white),
                                       GestureDetector(
-                                        onTap: (){
+                                        onTap: () async {
+                                          SharedPreferences prefs=await SharedPreferences.getInstance();
                                           CartMedelLocal cartLDBModel = CartMedelLocal({
                                             'id':c.id,
                                             'name': c.name,
@@ -206,7 +213,9 @@ class _state extends State<Cart>{
 
                                           setState(() {
                                             db.updateCourse(cartLDBModel);
+                                            ParentPage.TotalPrice=ParentPage.TotalPrice-c.price;
                                           });
+                                          prefs.setString("price", ParentPage.TotalPrice.toString());
                                         },
                                         child: Container(
                                             padding:EdgeInsets.all(3),
@@ -222,166 +231,187 @@ class _state extends State<Cart>{
                       }
                     }),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*.015,),
-              GestureDetector(
-                onTap: (){
+                       dataLocal.length!=0?
+                       Column(children: [
+                            SizedBox(height: MediaQuery.of(context).size.height*.015,),
+                            GestureDetector(
+                              onTap: (){
+                              },
+                              child: DottedBorder(
+                                  borderType: BorderType.RRect,
+                                  radius: Radius.circular(10),
+                                  color: Color(h.mainColor),
+                                  strokeWidth: 1.5,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width*.9,
+                                      height: MediaQuery.of(context).size.height*.06,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                                          //  border: Border.all(width: 1.0,color: Colors.black26),
+                                          color: Color(0xffddf8bf)
+                                      ),
+                                      child: CustomText.btnText(DemoLocalizations.of(context).title['freedelivery'], Color(h.mainColor)),
+                                    ),
+                                  )
 
-                },
-                child: DottedBorder(
-                    borderType: BorderType.RRect,
-                    radius: Radius.circular(10),
-                    color: Color(h.mainColor),
-                    strokeWidth: 1.5,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width*.9,
-                        height: MediaQuery.of(context).size.height*.06,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          //  border: Border.all(width: 1.0,color: Colors.black26),
-                          color: Color(0xffddf8bf)
-                        ),
-                        child: CustomText.btnText("تهانينا .. لقد حصلت علي توصيل مجاني", Color(h.mainColor)),
-                      ),
-                    )
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*.015,),
+                            Container(
+                              width: MediaQuery.of(context).size.width*.9,
+                              height: MediaQuery.of(context).size.height*.09,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width*.6,
+                                    height: MediaQuery.of(context).size.height*.065,
+                                    decoration: BoxDecoration(
+                                      borderRadius:BorderRadius.all(Radius.circular(10)),
+                                      color: Colors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.2),
+                                          spreadRadius: 3,
+                                          blurRadius: 3,
+                                          offset: Offset(0, 3), // changes position of shadow
+                                        ),
+                                      ],
+                                    ),
 
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*.015,),
-             Container(
-               width: MediaQuery.of(context).size.width*.9,
-               height: MediaQuery.of(context).size.height*.09,
-               child: Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 crossAxisAlignment: CrossAxisAlignment.center,
-                 children: [
-                   Container(
-                     width: MediaQuery.of(context).size.width*.6,
-                     height: MediaQuery.of(context).size.height*.065,
-                     decoration: BoxDecoration(
-                       borderRadius:BorderRadius.all(Radius.circular(10)),
-                       color: Colors.white,
-                       boxShadow: [
-                         BoxShadow(
-                           color: Colors.grey.withOpacity(0.2),
-                           spreadRadius: 3,
-                           blurRadius: 3,
-                           offset: Offset(0, 3), // changes position of shadow
-                         ),
-                       ],
-                     ),
-
-                     child: TextFormField(
-                       keyboardType: TextInputType.number,
-                       onFieldSubmitted: (value){
-                         FocusScope.of(context).requestFocus(FocusNode());
-                       },
-                       validator: (value){
-                         if(value.isEmpty){
-                           return '';
-                         }
-                         return null;
-                       },
-                       //textDirection: lang=="ar"?TextDirection.rtl:TextDirection.ltr,
-                       decoration: InputDecoration(
-                         contentPadding: EdgeInsets.only(right: 15,left: 15,top: 0,bottom: 0),
-                         enabledBorder: new OutlineInputBorder(
-                             borderRadius: BorderRadius.circular(10),
-                             borderSide: BorderSide(color: Colors.white)
-                         ),
-                         focusedBorder:  new OutlineInputBorder(
-                             borderRadius: BorderRadius.circular(10),
-                             borderSide: BorderSide(color: Colors.white)
-                         ),
-                         focusedErrorBorder:new OutlineInputBorder(
-                             borderRadius: BorderRadius.circular(10),
-                             borderSide: BorderSide(color: Colors.white)
-                         ),
-                         errorBorder:new OutlineInputBorder(
-                             borderRadius: BorderRadius.circular(10),
-                             borderSide: BorderSide(color: Colors.red)
-                         ),
-                         hintText:'كود الخصم الخاص بك',
-                         errorStyle: TextStyle(fontSize: 0),
-                         hintStyle: TextStyle(color: Color(h.mainColor),fontWeight: FontWeight.bold,fontSize: 12),
-                       ),
-                       controller: code,
-                     ),
-                   ),
-                   Container(
-                     height: MediaQuery.of(context).size.height*.065,
-                     width: MediaQuery.of(context).size.width*.28,
-                     decoration: BoxDecoration(
-                       borderRadius: BorderRadius.all(Radius.circular(10)),
-                       color: Color(h.mainColor)
-                     ),
-                     alignment: Alignment.center,
-                     child: CustomText.btnText("تطبيق", Colors.white),
-                   )
-                 ],
-               ),
-             ),
-              SizedBox(height: MediaQuery.of(context).size.height*.015,),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width*.05,
-                  right: MediaQuery.of(context).size.width*.05
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomText.btnText("المجموع", Color(h.mainColor)),
-                        CustomText.btnText("100 ريال", Color(h.mainColor))
-                      ],
-                    ),
-                    Divider(color: Colors.black12,thickness: 1,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomText.btnText("رسوم التوصيل", Color(h.mainColor)),
-                        CustomText.btnText("00 ريال", Color(h.mainColor))
-                      ],
-                    ),
-                    Divider(color: Colors.black12,thickness: 1,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomText.btnText("الاجمال شامل الضريبة", Colors.black),
-                        CustomText.btnText("100 ريال", Colors.black)
-                      ],
-                    ),
-                    Divider(color: Colors.black12,thickness: 1,)
-                  ],
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*.015,),
-              GestureDetector(
-                onTap: (){
-                  Navigator.push(context, GlobalFunction.route(Address()));
-                },
-                child: Container(
-                  height: MediaQuery.of(context).size.height*.065,
-                  width: MediaQuery.of(context).size.width*.9,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: Color(h.mainColor)
-                  ),
-                  alignment: Alignment.center,
-                  child: CustomText.btnText("التاكيد والدفع", Colors.white),
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*.015,),
-
-
+                                    child: TextFormField(
+                                      keyboardType: TextInputType.number,
+                                      onFieldSubmitted: (value){
+                                        FocusScope.of(context).requestFocus(FocusNode());
+                                      },
+                                      validator: (value){
+                                        if(value.isEmpty){
+                                          return '';
+                                        }
+                                        return null;
+                                      },
+                                      //textDirection: lang=="ar"?TextDirection.rtl:TextDirection.ltr,
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.only(right: 15,left: 15,top: 0,bottom: 0),
+                                        enabledBorder: new OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                            borderSide: BorderSide(color: Colors.white)
+                                        ),
+                                        focusedBorder:  new OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                            borderSide: BorderSide(color: Colors.white)
+                                        ),
+                                        focusedErrorBorder:new OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                            borderSide: BorderSide(color: Colors.white)
+                                        ),
+                                        errorBorder:new OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                            borderSide: BorderSide(color: Colors.red)
+                                        ),
+                                        hintText:DemoLocalizations.of(context).title['discountcode'],
+                                        errorStyle: TextStyle(fontSize: 0),
+                                        hintStyle: TextStyle(color: Color(h.mainColor),fontWeight: FontWeight.bold,fontSize: 12),
+                                      ),
+                                      controller: code,
+                                    ),
+                                  ),
+                                  Container(
+                                    height: MediaQuery.of(context).size.height*.065,
+                                    width: MediaQuery.of(context).size.width*.28,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        color: Color(h.mainColor)
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: CustomText.btnText(DemoLocalizations.of(context).title['confirm'], Colors.white),
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*.015,),
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              padding: EdgeInsets.only(
+                                  left: MediaQuery.of(context).size.width*.05,
+                                  right: MediaQuery.of(context).size.width*.05
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      CustomText.btnText(DemoLocalizations.of(context).title['total'], Color(h.mainColor)),
+                                      CustomText.btnText("${ParentPage.TotalPrice} ${DemoLocalizations.of(context).title['sr']}", Color(h.mainColor))
+                                    ],
+                                  ),
+                                  Divider(color: Colors.black12,thickness: 1,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      CustomText.btnText(DemoLocalizations.of(context).title['DeliveryCharge'], Color(h.mainColor)),
+                                      CustomText.btnText("00 ${DemoLocalizations.of(context).title['sr']}", Color(h.mainColor))
+                                    ],
+                                  ),
+                                  Divider(color: Colors.black12,thickness: 1,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      CustomText.btnText(DemoLocalizations.of(context).title['Totalincludingtax'], Colors.black),
+                                      CustomText.btnText("${ParentPage.TotalPrice} ${DemoLocalizations.of(context).title['sr']}", Colors.black)
+                                    ],
+                                  ),
+                                  Divider(color: Colors.black12,thickness: 1,)
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*.015,),
+                            GestureDetector(
+                              onTap: () async {
+                                SharedPreferences pref=await SharedPreferences.getInstance();
+                                List Items=new List();
+                                for(int i=0;i<dataLocal.length;i++){
+                                  CartMedelLocal c=new CartMedelLocal.fromMap(dataLocal[i]);
+                                  AddOrderDetail a=new AddOrderDetail(ProductId:c.id, Quantity:int.parse(c.quantity.toString()));
+                                  Items.add(a.toJson());
+                                }
+                                if(pref.getString("Token")!=null){
+                                  Navigator.push(context, GlobalFunction.route(Address(Items)));
+                                }
+                                else{
+                                  Navigator.push(context, GlobalFunction.route(HomePage(3)));
+                                }
+                              },
+                              child: Container(
+                                height: MediaQuery.of(context).size.height*.065,
+                                width: MediaQuery.of(context).size.width*.9,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    color: Color(h.mainColor)
+                                ),
+                                alignment: Alignment.center,
+                                child: CustomText.btnText(DemoLocalizations.of(context).title['Confirmationandpayment'], Colors.white),
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*.015,),
+                          ],):SizedBox()
             ],
           ),
         ),
       ),
     );
   }
+}
+class AddOrderDetail{
+  String ProductId;
+  int Quantity;
+  AddOrderDetail({this.ProductId,this.Quantity});
+  Map<String, dynamic> toJson() => {
+    "ProductId": ProductId,
+    "Quantity": Quantity,
+  };
 }

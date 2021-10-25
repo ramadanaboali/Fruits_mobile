@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fruits/DbHelper.dart';
 import 'package:fruits/Model/CartLocalModel.dart';
 import 'package:fruits/Services/GlobalVariable.dart';
+import 'package:fruits/utils/app_Localization.dart';
 import 'package:fruits/views/HomePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Categories.dart';
@@ -26,9 +27,9 @@ class _state extends State<MainPage>{
   ProductServices productServices=new ProductServices();
   Home h=new Home();
   TextEditingController SearchKey=new  TextEditingController();
-  List<ProductDetail>advertmentsList=[];
-  List<ProductDetail>bestSellerList=[];
-  List<ProductDetail>offersList=[];
+  List<ProductDetail>advertmentsList;
+  List<ProductDetail>bestSellerList;
+  List<ProductDetail>offersList;
   List<ProductDetail>ProductsCategory=[];
   DbHelper dbHelper=new DbHelper();
   var lang;
@@ -124,7 +125,7 @@ class _state extends State<MainPage>{
                                borderRadius: BorderRadius.circular(30),
                                borderSide: BorderSide(color: Colors.white)
                            ),
-                           hintText:'ما الذي تبحث عنه' ,
+                           hintText:DemoLocalizations.of(context).title['search'],
                            hintStyle: TextStyle(fontSize: 12,color: Colors.black38),
                            prefixIcon:Container(
                                width: 30,
@@ -148,12 +149,18 @@ class _state extends State<MainPage>{
                        ),
                      ),
                    ),
-                   advertmentsList.length==0?Container(
+                   advertmentsList==null?Container(
                      height: MediaQuery.of(context).size.height*.18,
                      width: MediaQuery.of(context).size.width,
                       child: Center(
                         child: CircularProgressIndicator(),
                       ),
+                   ):advertmentsList.length==0?Container(
+                     height: MediaQuery.of(context).size.height*.18,
+                     width: MediaQuery.of(context).size.width,
+                     child: Center(
+                       child: Text("No Data"),
+                     ),
                    ):
                    Container(
                      height: MediaQuery.of(context).size.height*.18,
@@ -235,7 +242,7 @@ class _state extends State<MainPage>{
                                                color: Color(h.mainColor)
                                            ),
                                            alignment: Alignment.center,
-                                           child: CustomText.text12Bold("اضف للسلة", Colors.white),
+                                           child: CustomText.text12Bold(DemoLocalizations.of(context).title['addCart'], Colors.white),
                                          ),
                                        )
                                      ],
@@ -312,7 +319,7 @@ class _state extends State<MainPage>{
                                            child: Icon(Icons.arrow_forward_outlined,color: Colors.white,),
                                          ),
                                          SizedBox(height: 3,),
-                                         CustomText.text12Bold("الكل ", Colors.black54),
+                                         CustomText.text12Bold(DemoLocalizations.of(context).title['all'], Colors.black54),
                                        ],
                                      ),
                                    ),
@@ -331,22 +338,28 @@ class _state extends State<MainPage>{
                      child: Row(
                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                        children: [
-                         CustomText.titleText("الاكثر طلبا"),
+                         CustomText.titleText(DemoLocalizations.of(context).title['bestSeller']),
                      GestureDetector(
                       onTap: (){
                       Navigator.push(context, GlobalFunction.route(CategoryProduct(bestSellerList,"الاكثر طلبا")));
                       },
-                       child: Text("عرض الكل",style: TextStyle(color: Color(h.mainColor),decoration: TextDecoration.underline),))
+                       child: Text(DemoLocalizations.of(context).title['showall'],style: TextStyle(color: Color(h.mainColor),decoration: TextDecoration.underline),))
                        ],
                      ),
                    ),
                    Divider(color: Colors.black12,thickness: 1,),
                    SizedBox(height: MediaQuery.of(context).size.height*.005,),
-                   bestSellerList.length==0?Container(
+                   bestSellerList==null?Container(
                      height: MediaQuery.of(context).size.height*.18,
                      width: MediaQuery.of(context).size.width,
                      child: Center(
                        child: CircularProgressIndicator(),
+                     ),
+                   ):bestSellerList.length==0?Container(
+                     height: MediaQuery.of(context).size.height*.18,
+                     width: MediaQuery.of(context).size.width,
+                     child: Center(
+                       child: Text("No Data"),
                      ),
                    ):
                    Container(
@@ -400,8 +413,8 @@ class _state extends State<MainPage>{
                                                  CustomText.btnText(bestSellerList[index].name, Colors.black),
                                                  Row(
                                                    children: [
-                                                     CustomText.text12Bold(bestSellerList[index].price.toString()+" ريال ", Color(h.mainColor)),
-                                                     CustomText.text12Bold("للكيلو", Colors.black54)
+                                                    CustomText.text12Bold(bestSellerList[index].price.toString()+" ", Color(h.mainColor)),
+                                                     CustomText.text12Bold(DemoLocalizations.of(context).title['srkg'], Colors.black54)
                                                    ],
                                                  )
                                                ],
@@ -482,7 +495,7 @@ class _state extends State<MainPage>{
                                                color: Color(h.mainColor)
                                            ),
                                            alignment: Alignment.center,
-                                           child: CustomText.text12Bold("اضف للسلة", Colors.white),
+                                           child: CustomText.text12Bold(DemoLocalizations.of(context).title['addCart'], Colors.white),
                                          ),
                                        )
                                      ],
@@ -502,22 +515,28 @@ class _state extends State<MainPage>{
                      child: Row(
                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                        children: [
-                         CustomText.titleText("عروضنا"),
+                         CustomText.titleText(DemoLocalizations.of(context).title['offers']),
                           GestureDetector(
                               onTap: (){
                               Navigator.push(context, GlobalFunction.route(CategoryProduct(offersList,"عروضنا ")));
                               },
-                          child: Text("عرض الكل",style: TextStyle(color: Color(h.mainColor),decoration: TextDecoration.underline),))
+                          child: Text(DemoLocalizations.of(context).title['showall'],style: TextStyle(color: Color(h.mainColor),decoration: TextDecoration.underline),))
                                              ],
                      ),
                    ),
                    Divider(color: Colors.black12,thickness: 1,),
                    SizedBox(height: MediaQuery.of(context).size.height*.005,),
-                   offersList.length==0?Container(
+                   offersList==null?Container(
                      height: MediaQuery.of(context).size.height*.18,
                      width: MediaQuery.of(context).size.width,
                      child: Center(
                        child: CircularProgressIndicator(),
+                     ),
+                   ):offersList.length==0?Container(
+                     height: MediaQuery.of(context).size.height*.18,
+                     width: MediaQuery.of(context).size.width,
+                     child: Center(
+                       child: Text("No Data"),
                      ),
                    ):
                    Container(
@@ -571,8 +590,8 @@ class _state extends State<MainPage>{
                                                  CustomText.btnText(offersList[index].name, Colors.black),
                                                  Row(
                                                    children: [
-                                                     CustomText.text12Bold(offersList[index].price.toString()+" ريال ", Color(h.mainColor)),
-                                                     CustomText.text12Bold("للكيلو", Colors.black54)
+                                                     CustomText.text12Bold(offersList[index].price.toString()+" ", Color(h.mainColor)),
+                                                     CustomText.text12Bold(DemoLocalizations.of(context).title['srkg'], Colors.black54)
                                                    ],
                                                  )
                                                ],
@@ -653,7 +672,7 @@ class _state extends State<MainPage>{
                                                color: Color(h.mainColor)
                                            ),
                                            alignment: Alignment.center,
-                                           child: CustomText.text12Bold("اضف للسلة", Colors.white),
+                                           child: CustomText.text12Bold(DemoLocalizations.of(context).title['addCart'], Colors.white),
                                          ),
                                        )
                                      ],
@@ -702,7 +721,7 @@ class _state extends State<MainPage>{
              child: Row(
                mainAxisAlignment: MainAxisAlignment.center,
                children: [
-                 CustomText.text12Bold(ParentPage.TotalPrice==null?"00 رس ":"${ParentPage.TotalPrice}رس ", Colors.black),
+                 CustomText.btnText(ParentPage.TotalPrice==null?"00 ${DemoLocalizations.of(context).title['sr']} ":"${ParentPage.TotalPrice} ${DemoLocalizations.of(context).title['sr']} ", Colors.black),
                  //SizedBox(width: 2,),
                 // CustomText.text12Bold("شامل الضريبة", Colors.black54)
                ],
@@ -723,7 +742,7 @@ class _state extends State<MainPage>{
                    mainAxisAlignment: MainAxisAlignment.center,
                    children: [
                      ImageIcon(AssetImage("images/shoppingCard.png"),color: Colors.white,),
-                     CustomText.btnText("سلة التسوق", Colors.white)
+                     CustomText.btnText(" "+DemoLocalizations.of(context).title['shoppingcart'], Colors.white)
                    ],
                  ),
              ),

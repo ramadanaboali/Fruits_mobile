@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fruits/utils/app_Localization.dart';
 import 'CustomText.dart';
 
 import '../main.dart';
@@ -28,7 +29,7 @@ class _state extends State<OrderSucess>{
          child: Column(
            children: [
              SizedBox(height: MediaQuery.of(context).size.height*.01,),
-             Text("طلب ناجح",style: TextStyle(fontSize: 50,color: Color(h.mainColor),fontWeight: FontWeight.bold,shadows:
+             Text(DemoLocalizations.of(context).title['ordersuccess'],style: TextStyle(fontSize: 46,color: Color(h.mainColor),fontWeight: FontWeight.bold,shadows:
              <Shadow>[
                Shadow(
                  offset: Offset(3, 3),
@@ -42,7 +43,7 @@ class _state extends State<OrderSucess>{
              Container(
                  width: MediaQuery.of(context).size.width*.9,
 
-                 child: CustomText.btnText("طلبك قيد التجهيز والتوصيل باسرع وقت يمكنك تفقد طلباتك الحالية او متابعة التسوق", Colors.black45)),
+                 child: CustomText.btnText(DemoLocalizations.of(context).title['ordersuccesstext'], Colors.black45)),
              SizedBox(height: MediaQuery.of(context).size.height*.025,),
              Container(
                  width: MediaQuery.of(context).size.width*.9,
@@ -55,7 +56,7 @@ class _state extends State<OrderSucess>{
                        },
                        child: Container(
                          height: MediaQuery.of(context).size.height*.065,
-                         width: MediaQuery.of(context).size.width*.43,
+                         width: MediaQuery.of(context).size.width*.44,
                          decoration: BoxDecoration(
                              borderRadius: BorderRadius.all(Radius.circular(10)),
                              color: Color(h.mainColor)
@@ -66,7 +67,7 @@ class _state extends State<OrderSucess>{
                            children: [
                              Icon(Icons.bookmark_border,color: Colors.white,size: 22,),
                              SizedBox(width: 3,),
-                             CustomText.btnText14("طلباتي", Colors.white)
+                             CustomText.btnText14(DemoLocalizations.of(context).title['myOrders'], Colors.white)
                            ],
                          ),
                        ),
@@ -77,7 +78,7 @@ class _state extends State<OrderSucess>{
                        },
                        child: Container(
                          height: MediaQuery.of(context).size.height*.065,
-                         width: MediaQuery.of(context).size.width*.43,
+                         width: MediaQuery.of(context).size.width*.44,
                          decoration: BoxDecoration(
                              borderRadius: BorderRadius.all(Radius.circular(10)),
                              color: Color(h.mainColor)
@@ -88,7 +89,7 @@ class _state extends State<OrderSucess>{
                            children: [
                              ImageIcon(AssetImage("images/shoppingCard.png"),color: Colors.white,size: 22,),
                              SizedBox(width: 3,),
-                             CustomText.btnText14("متابعة التسوق", Colors.white),
+                             CustomText.btnText14(DemoLocalizations.of(context).title['continueshopping'], Colors.white),
                            ],
                          )
 

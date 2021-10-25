@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fruits/Services/ConfigServices.dart';
+import 'package:fruits/utils/app_Localization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main.dart';
 import 'CustomText.dart';
@@ -12,10 +15,28 @@ class HelpCenter extends StatefulWidget{
 }
 class _state extends State<HelpCenter>{
   Home h=new Home();
+  ConfigServices configServices=new ConfigServices();
+  Map<String,dynamic>data;
+  loadData() async {
+    SharedPreferences pref=await SharedPreferences.getInstance();
+    data=await configServices.getSetting(pref.getString("lang"));
+    setState(() {
+    });
+    print(data);
+    print("sssssssssssssssssssssssssssssssssssssssssssssss");
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadData();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: data==null?Center(
+        child: CircularProgressIndicator(),
+      ):Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
@@ -30,7 +51,7 @@ class _state extends State<HelpCenter>{
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomText.titleTextColor("مركز المساعدة",Colors.black),
+                    CustomText.titleTextColor(DemoLocalizations.of(context).title['helpcenter'],Colors.black),
                     GestureDetector(
                       onTap: (){
                         Navigator.pop(context);
@@ -40,7 +61,7 @@ class _state extends State<HelpCenter>{
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            ImageIcon(AssetImage("images/IconBack.png"),),
+                            ParentPage.language=="ar"?ImageIcon(AssetImage("images/IconBack.png"),):Icon(Icons.arrow_forward_rounded,size: 30,),
                           ],
                         ),
                       ),
@@ -88,10 +109,10 @@ class _state extends State<HelpCenter>{
                               child: ImageIcon(AssetImage("images/lang.png"),color: Colors.white,size: 18,),
                             ),
                             SizedBox(width: 8,),
-                            CustomText.btnText("رقم الهاتف", Colors.black54)
+                            CustomText.btnText(DemoLocalizations.of(context).title['phonenumber'], Colors.black54)
                           ],
                         ),
-                        CustomText.text12Bold("7816186252236", Colors.black38),
+                        CustomText.text12Bold("01000478589", Colors.black38),
 
                       ],
                     ),
@@ -111,10 +132,10 @@ class _state extends State<HelpCenter>{
                               child: ImageIcon(AssetImage("images/lang.png"),color: Colors.white,size: 18,),
                             ),
                             SizedBox(width: 8,),
-                            CustomText.btnText("البريد الالكتروني", Colors.black54)
+                            CustomText.btnText(DemoLocalizations.of(context).title['email'], Colors.black54)
                           ],
                         ),
-                        CustomText.text12Bold("asd@mail.com", Colors.black38),
+                        CustomText.text12Bold(data["data"]["mailLink"], Colors.black38),
 
                       ],
                     ),
@@ -134,10 +155,10 @@ class _state extends State<HelpCenter>{
                               child: ImageIcon(AssetImage("images/lang.png"),color: Colors.white,size: 18,),
                             ),
                             SizedBox(width: 8,),
-                            CustomText.btnText("فيسبوك", Colors.black54)
+                            CustomText.btnText(DemoLocalizations.of(context).title['facebook'], Colors.black54)
                           ],
                         ),
-                        CustomText.text12Bold("fruit@faceBook.com", Colors.black38),
+                        CustomText.text12Bold(data["data"]["facebookLink"], Colors.black38),
 
                       ],
                     ),
@@ -157,10 +178,10 @@ class _state extends State<HelpCenter>{
                               child: ImageIcon(AssetImage("images/lang.png"),color: Colors.white,size: 18,),
                             ),
                             SizedBox(width: 8,),
-                            CustomText.btnText("تويتر", Colors.black54)
+                            CustomText.btnText(DemoLocalizations.of(context).title['twiter'], Colors.black54)
                           ],
                         ),
-                        CustomText.text12Bold("fruite@twitter.com", Colors.black38),
+                        CustomText.text12Bold(data["data"]["twitterLink"], Colors.black38),
 
                       ],
                     ),
@@ -180,10 +201,10 @@ class _state extends State<HelpCenter>{
                               child: ImageIcon(AssetImage("images/lang.png"),color: Colors.white,size: 18,),
                             ),
                             SizedBox(width: 8,),
-                            CustomText.btnText("سناب شات", Colors.black54)
+                            CustomText.btnText(DemoLocalizations.of(context).title['snapchat'], Colors.black54)
                           ],
                         ),
-                        CustomText.text12Bold("fruite@snapchat.com", Colors.black38),
+                        CustomText.text12Bold(data["data"]["snapShotLink"], Colors.black38),
 
                       ],
                     ),

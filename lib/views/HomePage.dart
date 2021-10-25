@@ -1,3 +1,5 @@
+import 'package:fruits/utils/app_Localization.dart';
+
 import 'Cart.dart';
 import 'Profile.dart';
 
@@ -60,16 +62,16 @@ class _State extends State<HomePage> {
         items: [
           BottomNavigationBarItem(
               icon:ImageIcon(AssetImage("images/homeIcon.png")),
-              title:  Text("الرئيسية",textAlign: TextAlign.center)),
+              title:  Text(DemoLocalizations.of(context).title['home'],textAlign: TextAlign.center)),
           BottomNavigationBarItem(
               icon:  ImageIcon(AssetImage("images/NotificationIcon.png")),
-              title: Text("الاشعارات",textAlign: TextAlign.center,)),
+              title: Text(DemoLocalizations.of(context).title['notification'],textAlign: TextAlign.center,)),
           BottomNavigationBarItem(
               icon:  ImageIcon(AssetImage("images/shoppingCard.png")),
-              title: Text("السله",textAlign: TextAlign.center)),
+              title: Text(DemoLocalizations.of(context).title['cart'],textAlign: TextAlign.center)),
           BottomNavigationBarItem(
               icon:ImageIcon(AssetImage("images/ProfileIcon.png")),
-              title:  Text("البروفايل",textAlign: TextAlign.center)),
+              title:  Text(DemoLocalizations.of(context).title['profile'],textAlign: TextAlign.center)),
 
 
 

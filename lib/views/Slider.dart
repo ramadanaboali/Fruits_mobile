@@ -4,6 +4,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:fruits/Model/SliderModel.dart';
 import 'package:fruits/Services/ConfigServices.dart';
 import 'package:fruits/Services/GlobalVariable.dart';
+import 'package:fruits/utils/app_Localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'CustomText.dart';
 import 'Login.dart';
@@ -100,10 +101,18 @@ class _state extends State<slider>{
                    ),
                  ),
                  new Center(
-                   child: Image.network(GlobalVariable.URL+data[index].photo,
-                     fit: BoxFit.fitHeight,
-                     height: MediaQuery.of(context).size.height * .35,
-                     width: MediaQuery.of(context).size.width * .9,
+                   child: Container(
+                     padding: EdgeInsets.only(
+                       top: 10,bottom: 10
+                     ),
+                     child: ClipRRect(
+                       borderRadius: BorderRadius.all(Radius.circular(20)),
+                       child: Image.network(GlobalVariable.URL+data[index].photo,
+                         fit: BoxFit.fitHeight,
+                         height: MediaQuery.of(context).size.height * .35,
+                         width: MediaQuery.of(context).size.width * .9,
+                       ),
+                     ),
                    ),
                  ),
                  Container(
@@ -147,7 +156,7 @@ class _state extends State<slider>{
                    ),
                  ),
                  SizedBox(
-                   height: MediaQuery.of(context).size.height * .02,
+                   height: MediaQuery.of(context).size.height * .01,
                  ),
                  GestureDetector(
                    child: Container(
@@ -157,9 +166,8 @@ class _state extends State<slider>{
                          borderRadius: BorderRadius.all(Radius.circular(10)),
                          color: Color(h.mainColor),
                        ),
-
                        alignment: Alignment.center,
-                       child: CustomText.btnText("تسوق الان", Colors.white)
+                       child: CustomText.btnText(DemoLocalizations.of(context).title['buynow'], Colors.white)
 
                    ),
                    onTap:() async {

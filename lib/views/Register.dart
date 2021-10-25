@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fruits/utils/app_Localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'CustomText.dart';
 import '../Services/UserServices.dart';
@@ -25,6 +26,7 @@ class _state extends State<Register>{
   FocusNode confirmPasswordNode=new FocusNode();
   bool passVisibility=true;
   bool passVisibility2=true;
+  String gender ="male";
   int error=-1;
   Home h=new Home();
   UserServices userServices=new UserServices();
@@ -53,7 +55,7 @@ class _state extends State<Register>{
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        ImageIcon(AssetImage("images/IconBack.png"),),
+                        ParentPage.language=="ar"?ImageIcon(AssetImage("images/IconBack.png"),):Icon(Icons.arrow_forward_rounded,size: 30,),
                       ],
                     ),
                   ),
@@ -410,13 +412,55 @@ class _state extends State<Register>{
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*.02,),
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          gender="male";
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          Radio(value: "male",groupValue: gender,onChanged: (val){
+                            setState(() {
+                              gender=val;
+                            });
+                          },activeColor: Color(h.mainColor),),
+                          CustomText.text12Bold(DemoLocalizations.of(context).title['male'], gender=="male"?Color(h.mainColor) :Colors.black38),
+                        ],
+
+                      ),
+                    ),
+                    SizedBox(width:10),
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          gender="female";
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          Radio(value: "female",groupValue: gender,onChanged: (val){
+                            setState(() {
+                              gender=val;
+                            });
+                          },activeColor: Color(h.mainColor),),
+                          CustomText.text12Bold(DemoLocalizations.of(context).title['female'], gender=="female"?Color(h.mainColor) :Colors.black38),
+                        ],
+
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*.02,),
                 message==null?SizedBox():CustomText.text12Bold(message, Color(h.mainColor)),
                 SizedBox(height: MediaQuery.of(context).size.height*.02,),
                 GestureDetector(
                   onTap: ()async{
                     if(formKey.currentState.validate()){
                       SharedPreferences prefs=await SharedPreferences.getInstance();
-                      responce=await userServices.register(prefs.getString("lang"), name.text, phone.text,Address.text, email.text, password.text);
+                      responce=await userServices.register(prefs.getString("lang"), name.text, phone.text,Address.text, email.text, password.text,gender,prefs.getString("device_token"));
                        if(responce["status"]==200)
                          {
                            GlobalFunction.SaveData("UserId", responce["user"]["id"]);
@@ -424,6 +468,9 @@ class _state extends State<Register>{
                            GlobalFunction.SaveData("Email", responce["user"]["email"]);
                            GlobalFunction.SaveData("Img", responce["user"]["photo"]);
                            GlobalFunction.SaveData("Token", responce["user"]["token"]);
+                           setState(() {
+                             ParentPage.user_id= responce["user"]["id"];
+                           });
                            Navigator.pushNamedAndRemoveUntil(context, "/VerificationCode", (route) => false);
                          }
                        else{

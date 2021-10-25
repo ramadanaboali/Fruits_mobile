@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fruits/utils/app_Localization.dart';
 import 'LangSetting.dart';
 
 import '../main.dart';
@@ -33,7 +34,7 @@ class _state extends State<Setting>{
                child: Row(
                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                  children: [
-                   CustomText.titleTextColor("الاعدادات",Colors.black),
+                   CustomText.titleTextColor(DemoLocalizations.of(context).title['setting'],Colors.black),
                    GestureDetector(
                      onTap: (){
                        Navigator.pop(context);
@@ -43,7 +44,7 @@ class _state extends State<Setting>{
                        child: Row(
                          mainAxisAlignment: MainAxisAlignment.end,
                          children: [
-                           ImageIcon(AssetImage("images/IconBack.png"),),
+                           ParentPage.language=="ar"?ImageIcon(AssetImage("images/IconBack.png"),):Icon(Icons.arrow_forward_rounded,size: 30,),
                          ],
                        ),
                      ),
@@ -94,10 +95,10 @@ class _state extends State<Setting>{
                                child: ImageIcon(AssetImage("images/lang.png"),color: Colors.white,size: 18,),
                              ),
                              SizedBox(width: 8,),
-                             CustomText.btnText("اللغة", Colors.black54)
+                             CustomText.btnText(DemoLocalizations.of(context).title['language'], Colors.black54)
                            ],
                          ),
-                         Icon(Icons.arrow_back_ios_outlined,color: Colors.black54,size: 20,)
+                         Icon(ParentPage.language=="en"?Icons.arrow_back_ios_outlined:Icons.arrow_forward_ios_outlined,color: Colors.black54,size: 20,)
                        ],
                      ),
                    ),
@@ -116,7 +117,7 @@ class _state extends State<Setting>{
                              child:Icon(Icons.notifications_none,color: Colors.white,)
                            ),
                            SizedBox(width: 8,),
-                           CustomText.btnText("صوت الاشعارات", Colors.black54)
+                           CustomText.btnText(DemoLocalizations.of(context).title['notificationsound'], Colors.black54)
                          ],
                        ),
                       Switch(value: notifiction,activeColor: Color(h.mainColor), onChanged: (val){setState(() {

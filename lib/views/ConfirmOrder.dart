@@ -1,5 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fruits/DbHelper.dart';
+import 'package:fruits/Model/AddressModel.dart';
+import 'package:fruits/Services/ProductServices.dart';
+import 'package:fruits/utils/app_Localization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'CustomText.dart';
 import 'OrderSuccess.dart';
 
@@ -8,13 +13,35 @@ import 'CustomSearch.dart';
 import 'GlobalFunction.dart';
 
 class ConfirmOrder extends StatefulWidget{
+  List Items=[];
+  String paymentMethod;
+  AddressDetail address;
+  String Time;
+  ConfirmOrder( List Items,String paymentMethod, AddressDetail address,  String Time){
+    this.Items=Items;
+    this.paymentMethod=paymentMethod;
+    this.address=address;
+    this.Time=Time;
+  }
   @override
   State<StatefulWidget> createState() {
-    return _state();
+    return _state( this.Items, this.paymentMethod,  this.address, this.Time);
   }
 }
 class _state extends State<ConfirmOrder>{
   Home h=new Home();
+  List Items=[];
+  DbHelper dbHelper=new DbHelper();
+  String paymentMethod;
+  AddressDetail address;
+  String Time;
+  _state( List Items,String paymentMethod, AddressDetail address,  String Time){
+    this.Items=Items;
+    this.paymentMethod=paymentMethod;
+    this.address=address;
+    this.Time=Time;
+  }
+  ProductServices productServices=new ProductServices();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +65,7 @@ class _state extends State<ConfirmOrder>{
                     children: [
                       Icon(Icons.check,color: Color(h.mainColor),size: 35,),
                       SizedBox(width: 5,),
-                      CustomText.titleTextColor("تأكيد الطلب",Color(h.mainColor)),
+                      CustomText.titleTextColor(DemoLocalizations.of(context).title['confirmOrder'],Color(h.mainColor)),
                     ],
                   ),
                   GestureDetector(
@@ -50,7 +77,7 @@ class _state extends State<ConfirmOrder>{
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          ImageIcon(AssetImage("images/IconBack.png"),),
+                          ParentPage.language=="ar"?ImageIcon(AssetImage("images/IconBack.png"),):Icon(Icons.arrow_forward_rounded,size: 30,),
                         ],
                       ),
                     ),
@@ -67,36 +94,36 @@ class _state extends State<ConfirmOrder>{
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CustomText.btnText("سلة الطلبات", Colors.black54),
-                      CustomText.btnText("3 طلبات", Color(h.mainColor)),
+                      CustomText.btnText(DemoLocalizations.of(context).title['orders'], Colors.black54),
+                      CustomText.btnText("${Items.length} ${DemoLocalizations.of(context).title['orders']}", Color(h.mainColor)),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CustomText.btnText("الضرايب", Colors.black54),
-                      CustomText.btnText("0 ريال", Color(h.mainColor)),
+                      CustomText.btnText(DemoLocalizations.of(context).title['tax'], Colors.black54),
+                      CustomText.btnText("0 ${DemoLocalizations.of(context).title['sr']}", Color(h.mainColor)),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CustomText.btnText("الخصم", Colors.black54),
-                      CustomText.btnText("3 ريال", Color(h.mainColor)),
+                      CustomText.btnText(DemoLocalizations.of(context).title['discound'], Colors.black54),
+                      CustomText.btnText("0 ${DemoLocalizations.of(context).title['sr']}", Color(h.mainColor)),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CustomText.btnText("تكلفة التوصيل", Colors.black54),
-                      CustomText.btnText("5 ريال", Color(h.mainColor)),
+                      CustomText.btnText(DemoLocalizations.of(context).title['DeliveryCharge'], Colors.black54),
+                      CustomText.btnText("0 ${DemoLocalizations.of(context).title['sr']}", Color(h.mainColor)),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CustomText.btnText("الاجمالي", Colors.black54),
-                      CustomText.btnText("22 ريال", Color(h.mainColor)),
+                      CustomText.btnText(DemoLocalizations.of(context).title['total'], Colors.black54),
+                      CustomText.btnText("${ParentPage.TotalPrice} ${DemoLocalizations.of(context).title['sr']}", Color(h.mainColor)),
                     ],
                   ),
 
@@ -148,10 +175,14 @@ class _state extends State<ConfirmOrder>{
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CustomText.text12Bold("مكة -شارع الملك سلطان", Colors.black),
-                          CustomText.text12Bold("عمارة رقم 2.. شقة رقم 11", Colors.black54),
-                          SizedBox(height: 5,),
-                          Text("تغير العنوان",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black,decoration: TextDecoration.underline),)
+                          SizedBox(height: 10,),
+                          CustomText.text12Bold(address.address, Colors.black),
+                          SizedBox(height: 10,),
+                          GestureDetector(
+                              onTap: (){
+                                Navigator.pop(context);
+                              },
+                              child: Container(child: Text(DemoLocalizations.of(context).title['changeaddress'],style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black,decoration: TextDecoration.underline),)))
                         ],
                       )
                     ],
@@ -161,8 +192,21 @@ class _state extends State<ConfirmOrder>{
             ),
             SizedBox(height: MediaQuery.of(context).size.height*.03,),
             GestureDetector(
-              onTap: (){
-                Navigator.push(context, GlobalFunction.route(OrderSucess()));
+              onTap: () async {
+                SharedPreferences prefs=await SharedPreferences.getInstance();
+                Map<String,dynamic>data=await productServices.addOrders(prefs.getString("Token"),prefs.getString("lang"), prefs.getString("UserId"), double.parse(prefs.getString("price")), address.id, this.Items,this.paymentMethod,this.Time);
+                print(data);
+                print("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
+                if(data["status"]==200){
+                  Navigator.push(context, GlobalFunction.route(OrderSucess()));
+                  ParentPage.TotalPrice=0.0;
+                  int i= await dbHelper.deleteCart();
+                  setState(() {
+                    prefs.setString("price", "0.0");
+                  });
+                  print(i.toString()+"     00000000000000000000000000000000000000000000000000000000000");
+                }
+
               },
               child: Container(
                   height: MediaQuery.of(context).size.height*.065,
@@ -177,7 +221,7 @@ class _state extends State<ConfirmOrder>{
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CustomText.btnText("التاكيد", Colors.white),
+                      CustomText.btnText(DemoLocalizations.of(context).title['confirm'], Colors.white),
                     ],
                   )
               ),

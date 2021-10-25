@@ -1,4 +1,4 @@
-package com.example.fruits
+package com.pithoft.fruits
 
 import io.flutter.embedding.android.FlutterActivity
 

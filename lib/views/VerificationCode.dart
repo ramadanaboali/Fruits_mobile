@@ -43,7 +43,7 @@ class _state extends State<VerificationCode>{
                  child: Row(
                    mainAxisAlignment: MainAxisAlignment.end,
                    children: [
-                     ImageIcon(AssetImage("images/IconBack.png"),),
+                     ParentPage.language=="ar"?ImageIcon(AssetImage("images/IconBack.png"),):Icon(Icons.arrow_forward_rounded,size: 30,),
                    ],
                  ),
                ),
