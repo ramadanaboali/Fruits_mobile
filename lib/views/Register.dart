@@ -471,7 +471,7 @@ class _state extends State<Register>{
                            setState(() {
                              ParentPage.user_id= responce["user"]["id"];
                            });
-                           Navigator.pushNamedAndRemoveUntil(context, "/VerificationCode", (route) => false);
+                           Navigator.pushNamedAndRemoveUntil(context, "/mainPage", (route) => false);
                          }
                        else{
                          setState(() {
