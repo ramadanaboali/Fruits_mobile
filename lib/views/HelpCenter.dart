@@ -18,6 +18,7 @@ class _state extends State<HelpCenter>{
   ConfigServices configServices=new ConfigServices();
   Map<String,dynamic>data;
   loadData() async {
+    print("Help Centerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
     SharedPreferences pref=await SharedPreferences.getInstance();
     data=await configServices.getSetting(pref.getString("lang"));
     setState(() {
@@ -70,7 +71,9 @@ class _state extends State<HelpCenter>{
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height*.05,),
-              Container(
+              data["data"].length==0?Center(
+                child: Text("No Data Founnd"),
+              ): Container(
                 margin: EdgeInsets.only(
                   left: MediaQuery.of(context).size.width*.05,
                   right: MediaQuery.of(context).size.width*.05,),

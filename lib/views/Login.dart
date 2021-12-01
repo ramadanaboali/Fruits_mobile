@@ -187,6 +187,8 @@ class _state extends State<Login>{
                     SharedPreferences pref=await SharedPreferences.getInstance();
                     if(formKey.currentState.validate()){
                       responces=await userServices.login("ar"/*ParentPage.language*/, phone.text, password.text,pref.getString("device_token"));
+                    print(responces);
+                    print("__________________________");
                       if(responces["status"]==200)
                       {
                         GlobalFunction.SaveData("UserId", responces["user"]["id"]);
@@ -197,7 +199,7 @@ class _state extends State<Login>{
                         setState(() {
                           ParentPage.user_id= responces["user"]["id"];
                         });
-                        Navigator.pushNamedAndRemoveUntil(context, "/mainPage", (route) => false);
+                       Navigator.pushNamedAndRemoveUntil(context, "/mainPage", (route) => false);
                       }
                       else {
                         setState(() {

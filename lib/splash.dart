@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fruits/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class Splash extends StatefulWidget{
   @override
@@ -14,6 +15,7 @@ loadDate()async{
   SharedPreferences prefs=await SharedPreferences.getInstance();
   setState(() {
     lang=prefs.getString("lang");
+    ParentPage.user_id=prefs.getString("UserId");
   });
   print(lang);
   print("ssssssssssss");
