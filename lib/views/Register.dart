@@ -411,7 +411,7 @@ class _state extends State<Register>{
                     ],
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*.02,),
+              /*  SizedBox(height: MediaQuery.of(context).size.height*.02,),
                 Row(
                   children: [
                     GestureDetector(
@@ -452,7 +452,7 @@ class _state extends State<Register>{
                       ),
                     )
                   ],
-                ),
+                ),*/
                 SizedBox(height: MediaQuery.of(context).size.height*.02,),
                 message==null?SizedBox():CustomText.text12Bold(message, Color(h.mainColor)),
                 SizedBox(height: MediaQuery.of(context).size.height*.02,),
