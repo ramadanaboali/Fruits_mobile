@@ -224,6 +224,9 @@ class _state extends State<ProFile>{
                       GlobalFunction.SaveData("Email", responces["user"]["email"]);
                       GlobalFunction.SaveData("Img", responces["user"]["photo"]);
                       GlobalFunction.SaveData("Token", responces["user"]["token"]);
+                      setState(() {
+                        ParentPage.user_id= responces["user"]["id"];
+                      });
                       Navigator.pushNamedAndRemoveUntil(context, "/mainPage", (route) => false);
                     }
                     else {
